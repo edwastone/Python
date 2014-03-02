@@ -17,6 +17,7 @@ respond = None
 requests = {}
 connected = noop
 disconnected = noop
+curNs = None
 
 def km_from_string(s=''):
     """create kernel manager from IPKernelApp string
@@ -183,7 +184,10 @@ def initIPy(s):
     disconnected()
 
 def setNs(path):
+  if path==curNs: return
   send("import lttools\nlttools.switch_ns('" + path.replace('\\', '\\\\') + "')")
+  time.sleep(0.1) #wait for msgloop to clear this namespace switch
+  path = curNs
 
 def IPyOutput(l):
   m = re.search('--existing (.*\.json)', l)
